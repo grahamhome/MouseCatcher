@@ -41,6 +41,9 @@ $RECYCLE.BIN/
 
 # Directories potentially created on remote AFP share
 .AppleDB
+
+# Compiled Java files
+bin/
 .AppleDesktop
 Network Trash Folder
 Temporary Items
