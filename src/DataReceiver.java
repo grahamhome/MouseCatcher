@@ -26,7 +26,7 @@ public class DataReceiver extends JFrame {
 	}
 	
 	private void createWindow() {
-		setTitle("Coordinate Receiver");
+		setTitle("Data Receiver");
 		setSize(400, 200);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
