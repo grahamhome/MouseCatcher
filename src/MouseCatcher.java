@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class MouseCatcher extends JFrame {
 	
-	private boolean active = true;
+	private boolean active = false;
 	private Socket serverConnection;
 	private DataOutputStream out;
 	
@@ -28,7 +28,7 @@ public class MouseCatcher extends JFrame {
 	}
 	
 	private void createWindow() {
-		setTitle("Remote Laser Controller - Active");
+		setTitle("Remote Laser Controller - Inactive");
 		setSize(800, 800);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -76,7 +76,7 @@ public class MouseCatcher extends JFrame {
 		double x = mouse.getX()-window.getX();
 		double y = mouse.getY()-window.getY();
 		if (active) {
-			String coords = "(" + x/getWidth() + ", " + y/getHeight() + ")\n";
+			String coords = (int)((x/getWidth())*255) + ", " + (int)((y/getHeight())*255) + "\n";
 			System.out.println(coords);
 			try {
 				out.writeBytes(coords);
