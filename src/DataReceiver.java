@@ -29,7 +29,7 @@ public class DataReceiver extends JFrame {
 	private OutputStream output;
 	private String beamOn = "254";
 	private String beamOff = "255";
-	private String separator = "1";
+	private String separator = "0";
 	
 	public DataReceiver() {
 		createWindow();
@@ -140,7 +140,12 @@ public class DataReceiver extends JFrame {
 					windowOutput.append(point + "\n");
 				} else {
 					String[] values = point.split(",");
-					if ((values.length == 2) && ! (values[0].equals(beamOn) || values[0].equals(beamOff) || values[1].equals(beamOn) || values[1].equals(beamOff))) {
+					if ((values.length == 2) && ! (values[0].equals(beamOn) || 
+							values[0].equals(beamOff) || 
+							values[0].equals(separator) || 
+							values[1].equals(beamOn) || 
+							values[1].equals(beamOff) || 
+							values[1].equals(separator))) {
 						send(separator);
 						send(values[0]);
 						send(values[1]);
