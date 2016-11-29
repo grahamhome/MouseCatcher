@@ -23,12 +23,13 @@ public class MouseCatcher extends JFrame {
 	public MouseCatcher() {
 		createWindow();
 		openSocket();
+		toggleTracking(false);
 		addMouseListener(new ClickTracker());
 		addMouseMotionListener(new MotionTracker());
+		
 	}
 	
 	private void createWindow() {
-		setTitle("Remote Laser Controller - Inactive");
 		setSize(800, 800);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -53,21 +54,31 @@ public class MouseCatcher extends JFrame {
 	}
 	
 	private void openSocket() {
-		try {
-			serverConnection = new Socket("localhost", 8008);
-			out = new DataOutputStream(serverConnection.getOutputStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		setTitle("Remote Laser Controller - Connecting To Server...");
+		boolean connected = false;
+		do {
+			try {
+				serverConnection = new Socket("localhost", 8008);
+				out = new DataOutputStream(serverConnection.getOutputStream());
+				connected = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} while (!connected);
 	}
 	
 	private void toggleTracking(Boolean... value) {
 		if (value.length > 0) {
-			active = value[0];
+			if (active != value[0]) {
+				active = value[0];
+				send(String.valueOf(active));
+			}
 		} else {
 			active = !active;
+			send(String.valueOf(active));
 		}
 		setTitle("Remote Laser Controller - " + (active ? "Active" : "Inactive"));
+		
 	}
 	
 	private void reportPosition() {
@@ -76,14 +87,18 @@ public class MouseCatcher extends JFrame {
 		double x = mouse.getX()-window.getX();
 		double y = mouse.getY()-window.getY();
 		if (active) {
-			String coords = (int)((x/getWidth())*255) + ", " + (int)((y/getHeight())*255) + "\n";
-			System.out.println(coords);
-			try {
-				out.writeBytes(coords);
-				out.flush();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			String coords = (int)((x/getWidth())*255) + ", " + (int)((y/getHeight())*255);
+			send(coords);
+		}
+	}
+	
+	private void send(String data) {
+		try {
+			System.out.println("Sending " + data + " to server");
+			out.writeBytes(data + "\n");
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

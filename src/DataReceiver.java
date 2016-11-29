@@ -24,9 +24,12 @@ public class DataReceiver extends JFrame {
 	private ServerSocket clientConnection;
 	private JTextArea windowOutput;
 	private BufferedReader input;
-	private final String portName = "COM3"; //Rename as appropriate; use "/dev/ttyUSB*" on Linux where * is the serial port number
+	private final String portName = "COM3"; //Rename to the actual COM port represented by your USB serial port
 	private SerialPort serialPort;
 	private OutputStream output;
+	private String beamOn = "254";
+	private String beamOff = "255";
+	private String separator = "1";
 	
 	public DataReceiver() {
 		createWindow();
@@ -86,8 +89,7 @@ public class DataReceiver extends JFrame {
 			}
 		}
 		if (portID == null) {
-			System.out.println("Could not find port " + portName);
-			//quit();
+			System.err.println("Error: could not find port " + portName);
 		}
 		try {
 			serialPort = (SerialPort) portID.open(this.getName(), 2000);
@@ -121,6 +123,7 @@ public class DataReceiver extends JFrame {
 					publish(data + "\n");
 				} catch (Exception e) {
 					e.printStackTrace();
+					Thread.sleep(1); // Give the window time to respond to input so it can be closed
 				}
 			}
 		}
@@ -128,14 +131,31 @@ public class DataReceiver extends JFrame {
 		@Override
 		protected void process(List<String> coords) {
 			for (String point : coords) {
-				windowOutput.append(point);
-				String[] values = point.split(",");
-				try {
-					output.write(Integer.parseInt(values[0]));
-					output.write(Integer.parseInt(values[1]));
-				} catch (Exception e) {
-					e.printStackTrace();
+				point = point.trim();
+				if (point.equals(String.valueOf(true))) {
+					send(beamOn);
+					windowOutput.append(point + "\n");
+				} else if (point.equals(String.valueOf(false))) {
+					send(String.valueOf(beamOff));
+					windowOutput.append(point + "\n");
+				} else {
+					String[] values = point.split(",");
+					if ((values.length == 2) && ! (values[0].equals(beamOn) || values[0].equals(beamOff) || values[1].equals(beamOn) || values[1].equals(beamOff))) {
+						send(separator);
+						send(values[0]);
+						send(values[1]);
+						windowOutput.append(point + "\n");
+					}
 				}
+			}
+		}
+		
+		private void send(String data) {
+			try {
+				System.out.println("Sending " + data + " to Arduino");
+				output.write(Byte.parseByte(data));
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
