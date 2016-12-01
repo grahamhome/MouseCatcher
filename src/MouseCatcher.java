@@ -114,8 +114,7 @@ public class MouseCatcher extends JFrame {
 		}
 
 		@Override
-		public void mouseEntered(MouseEvent arg0) {
-		}
+		public void mouseEntered(MouseEvent arg0) {}
 
 		@Override
 		public void mouseExited(MouseEvent arg0) {
@@ -123,19 +122,16 @@ public class MouseCatcher extends JFrame {
 		}
 
 		@Override
-		public void mousePressed(MouseEvent arg0) {
-		}
+		public void mousePressed(MouseEvent arg0) {}
 
 		@Override
-		public void mouseReleased(MouseEvent arg0) {
-		}
+		public void mouseReleased(MouseEvent arg0) {}
 	}
 
 	private class MotionTracker implements MouseMotionListener {
 
 		@Override
-		public void mouseDragged(MouseEvent e) {
-		}
+		public void mouseDragged(MouseEvent e) {}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
