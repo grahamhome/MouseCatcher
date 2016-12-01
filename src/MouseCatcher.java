@@ -14,21 +14,19 @@ import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
 public class MouseCatcher extends JFrame {
-	
+
 	private boolean active = false;
 	private Socket serverConnection;
 	private DataOutputStream out;
-	
-	
+
 	public MouseCatcher() {
 		createWindow();
 		openSocket();
 		toggleTracking(false);
 		addMouseListener(new ClickTracker());
 		addMouseMotionListener(new MotionTracker());
-		
 	}
-	
+
 	private void createWindow() {
 		setSize(800, 800);
 		setLocationRelativeTo(null);
@@ -41,7 +39,7 @@ public class MouseCatcher extends JFrame {
 		});
 		setVisible(true);
 	}
-	
+
 	private void quit() {
 		dispose();
 		try {
@@ -52,7 +50,7 @@ public class MouseCatcher extends JFrame {
 			System.exit(0);
 		}
 	}
-	
+
 	private void openSocket() {
 		setTitle("Remote Laser Controller - Connecting To Server...");
 		boolean connected = false;
@@ -66,7 +64,7 @@ public class MouseCatcher extends JFrame {
 			}
 		} while (!connected);
 	}
-	
+
 	private void toggleTracking(Boolean... value) {
 		if (value.length > 0) {
 			if (active != value[0]) {
@@ -78,20 +76,19 @@ public class MouseCatcher extends JFrame {
 			send(String.valueOf(active));
 		}
 		setTitle("Remote Laser Controller - " + (active ? "Active" : "Inactive"));
-		
 	}
-	
+
 	private void reportPosition() {
 		Point mouse = MouseInfo.getPointerInfo().getLocation();
 		Point window = getLocationOnScreen();
-		double x = mouse.getX()-window.getX();
-		double y = mouse.getY()-window.getY();
+		double x = mouse.getX() - window.getX();
+		double y = mouse.getY() - window.getY();
 		if (active) {
-			String coords = (int)((x/getWidth())*255) + ", " + (int)((y/getHeight())*255);
+			String coords = (int) ((x / getWidth()) * 255) + ", " + (int) ((y / getHeight()) * 255);
 			send(coords);
 		}
 	}
-	
+
 	private void send(String data) {
 		try {
 			System.out.println("Sending " + data + " to server");
@@ -101,15 +98,13 @@ public class MouseCatcher extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			new MouseCatcher();
-		});
+		EventQueue.invokeLater(() -> new MouseCatcher());
 	}
-	
+
 	private class ClickTracker implements MouseListener {
-		
+
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			toggleTracking();
@@ -119,7 +114,8 @@ public class MouseCatcher extends JFrame {
 		}
 
 		@Override
-		public void mouseEntered(MouseEvent arg0) {}
+		public void mouseEntered(MouseEvent arg0) {
+		}
 
 		@Override
 		public void mouseExited(MouseEvent arg0) {
@@ -127,21 +123,24 @@ public class MouseCatcher extends JFrame {
 		}
 
 		@Override
-		public void mousePressed(MouseEvent arg0) {}
+		public void mousePressed(MouseEvent arg0) {
+		}
 
 		@Override
-		public void mouseReleased(MouseEvent arg0) {}
+		public void mouseReleased(MouseEvent arg0) {
+		}
 	}
-	
+
 	private class MotionTracker implements MouseMotionListener {
 
 		@Override
-		public void mouseDragged(MouseEvent e) {}
+		public void mouseDragged(MouseEvent e) {
+		}
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			reportPosition();	
+			reportPosition();
 		}
-		
+
 	}
 }
