@@ -19,17 +19,15 @@ public class MouseCatcher {
 	private boolean active = false;
 	private Socket serverConnection;
 	private DataOutputStream out;
-	
-	
+
 	public MouseCatcher() {
 		createWindow();
 		openSocket();
 		toggleTracking(false);
 		window.addMouseListener(new ClickTracker());
 		window.addMouseMotionListener(new MotionTracker());
-		
 	}
-	
+
 	private void createWindow() {
 		window = new JFrame();
 		window.setSize(800, 800);
@@ -43,7 +41,7 @@ public class MouseCatcher {
 		});
 		window.setVisible(true);
 	}
-	
+
 	private void quit() {
 		window.dispose();
 		try {
@@ -54,7 +52,7 @@ public class MouseCatcher {
 			System.exit(0);
 		}
 	}
-	
+
 	private void openSocket() {
 		window.setTitle("Remote Laser Controller - Connecting To Server...");
 		boolean connected = false;
@@ -68,7 +66,7 @@ public class MouseCatcher {
 			}
 		} while (!connected);
 	}
-	
+
 	private void toggleTracking(Boolean... value) {
 		if (value.length > 0) {
 			if (active != value[0]) {
@@ -80,9 +78,8 @@ public class MouseCatcher {
 			send(String.valueOf(active));
 		}
 		window.setTitle("Remote Laser Controller - " + (active ? "Active" : "Inactive"));
-		
 	}
-	
+
 	private void reportPosition() {
 		Point mouse = MouseInfo.getPointerInfo().getLocation();
 		Point windowLoc = window.getLocationOnScreen();
@@ -93,7 +90,7 @@ public class MouseCatcher {
 			send(coords);
 		}
 	}
-	
+
 	private void send(String data) {
 		try {
 			System.out.println("Sending " + data + " to server");
@@ -103,15 +100,13 @@ public class MouseCatcher {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			new MouseCatcher();
-		});
+		EventQueue.invokeLater(() -> new MouseCatcher());
 	}
-	
+
 	private class ClickTracker implements MouseListener {
-		
+
 		@Override
 		public void mouseClicked(MouseEvent arg0) {
 			toggleTracking();
@@ -134,7 +129,7 @@ public class MouseCatcher {
 		@Override
 		public void mouseReleased(MouseEvent arg0) {}
 	}
-	
+
 	private class MotionTracker implements MouseMotionListener {
 
 		@Override
@@ -142,8 +137,8 @@ public class MouseCatcher {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			reportPosition();	
+			reportPosition();
 		}
-		
+
 	}
 }

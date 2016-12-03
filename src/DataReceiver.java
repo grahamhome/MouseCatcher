@@ -39,6 +39,7 @@ public class DataReceiver {
 	}
 	
 	private void createWindow() {
+		window = new JFrame();
 		window.setTitle("Data Receiver");
 		window.setSize(400, 400);
 		window.setLocationRelativeTo(null);
