@@ -19,8 +19,9 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
 @SuppressWarnings("serial")
-public class DataReceiver extends JFrame {
+public class DataReceiver {
 	
+	private JFrame window;
 	private ServerSocket clientConnection;
 	private JTextArea windowOutput;
 	private BufferedReader input;
@@ -38,11 +39,11 @@ public class DataReceiver extends JFrame {
 	}
 	
 	private void createWindow() {
-		setTitle("Data Receiver");
-		setSize(400, 400);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		window.setTitle("Data Receiver");
+		window.setSize(400, 400);
+		window.setLocationRelativeTo(null);
+		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		window.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent event) {
 				quit();
@@ -52,12 +53,12 @@ public class DataReceiver extends JFrame {
 		windowOutput = new JTextArea();
 		windowOutput.setEditable(false);
 		JScrollPane scroll = new JScrollPane(windowOutput, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		add(scroll);
-		setVisible(true);
+		window.add(scroll);
+		window.setVisible(true);
 	}
 	
 	private void quit() {
-		dispose();
+		window.dispose();
 		try {
 			input.close();
 			clientConnection.close();
@@ -92,7 +93,7 @@ public class DataReceiver extends JFrame {
 			System.err.println("Error: could not find port " + portName);
 		}
 		try {
-			serialPort = (SerialPort) portID.open(this.getName(), 2000);
+			serialPort = (SerialPort) portID.open(DataReceiver.class.toString(), 2000);
 			serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 			output = serialPort.getOutputStream();
 		} catch (Exception e) {

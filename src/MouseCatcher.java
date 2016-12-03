@@ -13,8 +13,9 @@ import java.net.Socket;
 import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
-public class MouseCatcher extends JFrame {
+public class MouseCatcher {
 	
+	private JFrame window;
 	private boolean active = false;
 	private Socket serverConnection;
 	private DataOutputStream out;
@@ -24,26 +25,27 @@ public class MouseCatcher extends JFrame {
 		createWindow();
 		openSocket();
 		toggleTracking(false);
-		addMouseListener(new ClickTracker());
-		addMouseMotionListener(new MotionTracker());
+		window.addMouseListener(new ClickTracker());
+		window.addMouseMotionListener(new MotionTracker());
 		
 	}
 	
 	private void createWindow() {
-		setSize(800, 800);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		window = new JFrame();
+		window.setSize(800, 800);
+		window.setLocationRelativeTo(null);
+		window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		window.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent event) {
 				quit();
 			}
 		});
-		setVisible(true);
+		window.setVisible(true);
 	}
 	
 	private void quit() {
-		dispose();
+		window.dispose();
 		try {
 			serverConnection.close();
 		} catch (IOException e) {
@@ -54,7 +56,7 @@ public class MouseCatcher extends JFrame {
 	}
 	
 	private void openSocket() {
-		setTitle("Remote Laser Controller - Connecting To Server...");
+		window.setTitle("Remote Laser Controller - Connecting To Server...");
 		boolean connected = false;
 		do {
 			try {
@@ -77,17 +79,17 @@ public class MouseCatcher extends JFrame {
 			active = !active;
 			send(String.valueOf(active));
 		}
-		setTitle("Remote Laser Controller - " + (active ? "Active" : "Inactive"));
+		window.setTitle("Remote Laser Controller - " + (active ? "Active" : "Inactive"));
 		
 	}
 	
 	private void reportPosition() {
 		Point mouse = MouseInfo.getPointerInfo().getLocation();
-		Point window = getLocationOnScreen();
-		double x = mouse.getX()-window.getX();
-		double y = mouse.getY()-window.getY();
+		Point windowLoc = window.getLocationOnScreen();
+		double x = mouse.getX()-windowLoc.getX();
+		double y = mouse.getY()-windowLoc.getY();
 		if (active) {
-			String coords = (int)((x/getWidth())*255) + ", " + (int)((y/getHeight())*255);
+			String coords = (int)((x/window.getWidth())*255) + ", " + (int)((y/window.getHeight())*255);
 			send(coords);
 		}
 	}
